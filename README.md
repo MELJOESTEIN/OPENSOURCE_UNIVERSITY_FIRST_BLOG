@@ -6,4 +6,4 @@ for the Posts that will be created.
 
 ---------------Django Admin connection-----------
 --------Username :opensource
---------password: 7
+--------password: 1234
