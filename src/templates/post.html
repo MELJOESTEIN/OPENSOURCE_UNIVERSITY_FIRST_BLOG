@@ -8,36 +8,10 @@
     width: 100%;
   }
 </style>
-
-        <div class="container">
-          <!-- Navbar Brand -->
-          <div class="navbar-header d-flex align-items-center justify-content-between">
-            <!-- Navbar Brand --><a href="index.html" class="navbar-brand"></a>
-            <!-- Toggle Button-->
-            <button type="button" data-toggle="collapse" data-target="#navbarcollapse" aria-controls="navbarcollapse" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"><span></span><span></span><span></span></button>
-          </div>
-          <!-- Navbar Menu -->
-          <div id="navbarcollapse" class="collapse navbar-collapse">
-            <ul class="navbar-nav ml-auto">
-              <li class="nav-item"><a href="index.html" class="nav-link ">Home</a>
-              </li>
-              <li class="nav-item"><a href="blog.html" class="nav-link ">Blog</a>
-              </li>
-              <li class="nav-item"><a href="post.html" class="nav-link active ">Post</a>
-              </li>
-              <li class="nav-item"><a href="#" class="nav-link ">Contact</a>
-              </li>
-            </ul>
-            <div class="navbar-text"><a href="#" class="search-btn"><i class="icon-search-1"></i></a></div>
-            <ul class="langs navbar-text"><a href="#" class="active">EN</a><span>           </span><a href="#">ES</a></ul>
-          </div>
-        </div>
-      </nav>
-    </header>
-    <div class="container">
+<div class="container">
       <div class="row">
         <!-- Latest Posts -->
-        <main class="post blog-post col-lg-8"> 
+        <main class="post blog-post col-lg-8">
           <div class="container">
             <div class="post-single">
               <div class="post-thumbnail"><img src="{{ post.thumbnail.url }}" alt="..." class="img-fluid"></div>
@@ -46,7 +20,11 @@
                   <div class="category">
                     {% for cat in post.categories.all %}
                     <a href="#">{{ cat }}</a>
-                    {% endfor%}
+                    {% endfor %}
+                  </div>
+                  <div>
+                    <a href="">Update</a>
+                    <a href="">Delete</a>
                   </div>
                  </div>
                 <h1>{{ post.title }}<a href="#"><i class="fa fa-bookmark-o"></i></a></h1>
@@ -62,7 +40,6 @@
                 <div class="post-body">
                   {{ post.content | safe }}
                 </div>
-                <div class="post-tags"><a href="#" class="tag">#Business</a><a href="#" class="tag">#Tricks</a><a href="#" class="tag">#Financial</a><a href="#" class="tag">#Economy</a></div>
                 <div class="posts-nav d-flex justify-content-between align-items-stretch flex-column flex-md-row">
                   {% if post.previous_post %}
                 <a href=" {{ post.previous_post.get_absolute_url }}" class="prev-post text-left d-flex align-items-center">
@@ -83,32 +60,38 @@
                 </div>
                 <div class="post-comments">
                   <header>
-                    <h3 class="h6">Post Comments<span class="no-of-comments">(3)</span></h3>
+                    <h3 class="h6">Post Comments<span class="no-of-comments">({{ post.comments.count }})</span></h3>
                   </header>
+                  {% for comment in post.get_comments %}
                   <div class="comment">
                     <div class="comment-header d-flex justify-content-between">
                       <div class="user d-flex align-items-center">
-                        <div class="image"><img src="/static/img/user.svg" alt="..." class="img-fluid rounded-circle"></div>
-                        <div class="title"><strong>Jabi Hernandiz</strong><span class="date">May 2016</span></div>
+                        <div class="image">
+                          {% if comment.user.author %}
+                          <img src="{{ comment.user.author.profile_picture.url }}" alt="..." class="img-fluid rounded-circle">
+                          {% else %}
+
+                          {% endif %}
+                        </div>
+                        <div class="title"><strong>{{ comment.user.username }}</strong><span class="date">{{ comment.timestamp|timesince }} ago</span></div>
                       </div>
                     </div>
                     <div class="comment-body">
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+                      <p>{{ comment.content }}</p>
                     </div>
                   </div>
-                  
+                  {% endfor %}
                 </div>
+                {% if request.user.is_authenticated %}
                 <div class="add-comment">
                   <header>
                     <h3 class="h6">Leave a reply</h3>
                   </header>
-                  <form action="POST" class="commenting-form">
-                    {% csrf_token%}
+                  <form method="POST" action="." class="commenting-form">
+                    {% csrf_token %}
                     <div class="row">
                       <div class="form-group col-md-12">
-                        <div class="form-group col-md-12">
-                        <textarea name="usercomment" id="usercomment" placeholder="Type your comment" class="form-control"></textarea>
-                        </div>
+                          {{ form }}
                       </div>
                       <div class="form-group col-md-12">
                         <button type="submit" class="btn btn-secondary">Submit Comment</button>
@@ -116,10 +99,12 @@
                     </div>
                   </form>
                 </div>
+                {% endif %}
               </div>
             </div>
           </div>
-        </main>
+       </main>
+        {% include 'sidebar.html' with most_recent=most_recent category_count=category_count %}
       </div>
     </div>
 {% endblock content %}
