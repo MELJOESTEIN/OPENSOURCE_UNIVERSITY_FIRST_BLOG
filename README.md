@@ -5,3 +5,5 @@ If not you won't be able to read any post of the Blog. 'Cause of the securiy imp
 ---------------Django Admin connection-----------
 --------Username :opensource
 --------password: 1234
+
+The main features have been done, once online I'll keep managing the blog by adding new features
